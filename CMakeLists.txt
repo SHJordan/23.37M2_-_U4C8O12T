@@ -58,6 +58,8 @@ target_include_directories(23.37M2_-_U4C8O12T PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(23.37M2_-_U4C8O12T 
+        hardware_adc
+        hardware_pwm
         hardware_i2c
         hardware_pio
         hardware_timer
