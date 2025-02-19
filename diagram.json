@@ -6,8 +6,8 @@
         {
             "type": "board-pi-pico-w",
             "id": "pico",
-            "top": 0,
-            "left": 0,
+            "top": -3.25,
+            "left": 3.55,
             "attrs": {
                 "builder": "pico-sdk"
             }
@@ -71,7 +71,7 @@
             "top": -166.8,
             "left": -351.4,
             "attrs": {
-                "color": "red"
+                "color": "blue"
             }
         },
         {
@@ -89,7 +89,8 @@
             "top": -128.4,
             "left": -313,
             "attrs": {
-                "color": "blue"
+                "color": "red",
+                "flip": ""
             }
         },
         {
@@ -151,6 +152,25 @@
             "attrs": {
                 "value": "1000"
             }
+        },
+        {
+            "type": "wokwi-pushbutton",
+            "id": "btn1",
+            "top": -70.6,
+            "left": -172.8,
+            "attrs": {
+                "color": "blue",
+                "xray": "1"
+            }
+        },
+        {
+            "type": "wokwi-resistor",
+            "id": "r5",
+            "top": -15.25,
+            "left": 38.4,
+            "attrs": {
+                "value": "10000"
+            }
         }
     ],
     "connections": [
@@ -205,7 +225,7 @@
         [
             "led1:A",
             "pico:GP11",
-            "red",
+            "blue",
             [
                 "v0"
             ]
@@ -221,7 +241,7 @@
         [
             "led3:A",
             "pico:GP13",
-            "blue",
+            "red",
             [
                 "v0"
             ]
@@ -229,7 +249,7 @@
         [
             "led1:C",
             "r2:1",
-            "green",
+            "black",
             [
                 "v0"
             ]
@@ -237,7 +257,7 @@
         [
             "led2:C",
             "r3:1",
-            "green",
+            "black",
             [
                 "v0"
             ]
@@ -245,7 +265,7 @@
         [
             "led3:C",
             "r1:1",
-            "green",
+            "black",
             [
                 "v0"
             ]
@@ -302,22 +322,6 @@
             ]
         ],
         [
-            "oled1:SCL",
-            "pico:GP14",
-            "gold",
-            [
-                "v0"
-            ]
-        ],
-        [
-            "oled1:SDA",
-            "pico:GP15",
-            "orange",
-            [
-                "v0"
-            ]
-        ],
-        [
             "vcc1:VCC",
             "oled1:VCC",
             "red",
@@ -358,6 +362,59 @@
             [
                 "v-76.8",
                 "h63.65"
+            ]
+        ],
+        [
+            "pico:GP5",
+            "btn1:2.r",
+            "blue",
+            [
+                "h-25.25",
+                "v-109.05"
+            ]
+        ],
+        [
+            "btn1:1.r",
+            "pico:GND.1",
+            "black",
+            [
+                "h96.2",
+                "v89.65"
+            ]
+        ],
+        [
+            "r5:1",
+            "pico:GP5",
+            "red",
+            [
+                "h-67.2",
+                "v105.6",
+                "h38.4"
+            ]
+        ],
+        [
+            "r5:2",
+            "pico:3V3",
+            "red",
+            [
+                "h8.4",
+                "v57.6"
+            ]
+        ],
+        [
+            "oled1:SDA",
+            "pico:GP14",
+            "gold",
+            [
+                "v0"
+            ]
+        ],
+        [
+            "oled1:SCL",
+            "pico:GP15",
+            "orange",
+            [
+                "v0"
             ]
         ]
     ],
