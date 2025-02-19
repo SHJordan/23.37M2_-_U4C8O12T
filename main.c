@@ -38,15 +38,15 @@ volatile uint64_t last_btn_joy_time = 0;
 volatile uint64_t last_btn_a_time = 0;
 
 ssd1306_t display;
-uint16_t square_x;
-uint16_t square_y;
+uint16_t square_x = DISPLAY_WIDTH / 2 - SQUARE_SIZE / 2;
+uint16_t square_y = DISPLAY_HEIGHT / 2 - SQUARE_SIZE / 2;
 
 // Protótipos das funções
 void init_gpios(void);
 void init_pwm(void);
 void init_adc(void);
 void init_i2c(void);
-void update_display(ssd1306_t *disp, uint16_t x, uint16_t y);
+void update_display(ssd1306_t *disp);
 void gpio_callback(uint gpio, uint32_t events);
 uint16_t map_value(uint16_t value, uint16_t in_min, uint16_t in_max, uint16_t out_min, uint16_t out_max);
 
@@ -69,17 +69,34 @@ int main()
         uint16_t y_val = adc_read();
 
         // Atualiza intensidade dos LEDs se habilitado
+        square_x = map_value(y_val, 0, ADC_MAX, DISPLAY_HEIGHT - SQUARE_SIZE - 1, 0);
+        square_y = map_value(x_val, 0, ADC_MAX, DISPLAY_WIDTH - SQUARE_SIZE - 1, 0);
+
         if (pwm_enabled)
         {
             // Eixo X controla LED vermelho
             uint16_t red_intensity = abs(x_val - 2048) * 2;
-            pwm_set_gpio_level(LED_RED, map_value(red_intensity, 0, ADC_MAX, 0, PWM_MAX));
-            printf("Red: %d\n", red_intensity);
+            if (red_intensity > 100)
+            {
+                pwm_set_gpio_level(LED_RED, map_value(red_intensity, 0, ADC_MAX, 0, PWM_MAX));
+                printf("Red: %d\n", red_intensity);
+            }
+            else
+            {
+                pwm_set_gpio_level(LED_RED, 0);
+            }
 
             // Eixo Y controla LED azul
             uint16_t blue_intensity = abs(y_val - 2048) * 2;
-            pwm_set_gpio_level(LED_BLUE, map_value(blue_intensity, 0, ADC_MAX, 0, PWM_MAX));
-            printf("Blue: %d\n", blue_intensity);
+            if (blue_intensity > 100)
+            {
+                pwm_set_gpio_level(LED_BLUE, map_value(blue_intensity, 0, ADC_MAX, 0, PWM_MAX));
+                printf("Blue: %d\n", blue_intensity);
+            }
+            else
+            {
+                pwm_set_gpio_level(LED_BLUE, 0);
+            }
         }
         else
         {
@@ -88,9 +105,7 @@ int main()
         }
 
         // Atualiza display
-        square_x = map_value(x_val, 0, ADC_MAX, 0, DISPLAY_WIDTH - SQUARE_SIZE);
-        square_y = map_value(y_val, 0, ADC_MAX, 0, DISPLAY_HEIGHT - SQUARE_SIZE);
-        update_display(&display, square_x, square_y);
+        update_display(&display);
 
         sleep_ms(100);
     }
@@ -152,10 +167,9 @@ void init_i2c()
     ssd1306_send_data(&display);
 }
 
-void update_display(ssd1306_t *disp, uint16_t x, uint16_t y)
+void update_display(ssd1306_t *disp)
 {
     ssd1306_fill(disp, false);
-
     // Desenha borda baseado no estilo atual
     switch (border_style)
     {
@@ -183,17 +197,17 @@ void update_display(ssd1306_t *disp, uint16_t x, uint16_t y)
     }
 
     // Desenha quadrado móvel
-    // ssd1306_rect(disp, x, y, SQUARE_SIZE, SQUARE_SIZE, true, true);
+    ssd1306_rect(disp, square_x, square_y, SQUARE_SIZE, SQUARE_SIZE, true, true);
 
     ssd1306_send_data(disp);
 }
 
 void gpio_callback(uint gpio, uint32_t events)
 {
-    uint64_t current_time = time_us_64();
+    uint64_t current_time = to_ms_since_boot(get_absolute_time());
     if (gpio == BTN_JOY || gpio == BTN_A)
     {
-        if (current_time - last_btn_joy_time > DEBOUNCE_MS * 1000)
+        if (current_time - last_btn_joy_time > DEBOUNCE_MS)
         {
             green_led_state = !green_led_state;
             gpio_put(LED_GREEN, green_led_state);
@@ -202,13 +216,12 @@ void gpio_callback(uint gpio, uint32_t events)
             {
                 border_style = 0;
             }
-            update_display(&display, square_x, square_y);
             last_btn_joy_time = current_time;
         }
     }
     else if (gpio == BTN_A)
     {
-        if (current_time - last_btn_a_time > DEBOUNCE_MS * 1000)
+        if (current_time - last_btn_a_time > DEBOUNCE_MS)
         {
             pwm_enabled = !pwm_enabled;
             last_btn_a_time = current_time;
