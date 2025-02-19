@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/23.37M2_-_U4C8O12T.hex'
+elf = 'build/23.37M2_-_U4C8O12T.uf2'

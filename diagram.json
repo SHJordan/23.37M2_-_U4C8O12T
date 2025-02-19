@@ -1,0 +1,103 @@
+{
+    "version": 1,
+    "author": "Jordan Humberto de Souza",
+    "editor": "wokwi",
+    "parts": [
+        {
+            "type": "board-pi-pico-w",
+            "id": "pico",
+            "top": 0,
+            "left": 0,
+            "attrs": {
+                "builder": "pico-sdk"
+            }
+        },
+        {
+            "type": "ssd1306",
+            "id": "display",
+            "attrs": {
+                "i2cAddress": "0x3C",
+                "sda": "14",
+                "scl": "15"
+            }
+        },
+        {
+            "type": "analog-joystick",
+            "id": "joystick",
+            "attrs": {
+                "xPin": "26",
+                "yPin": "27",
+                "buttonPin": "22"
+            }
+        },
+        {
+            "type": "pushbutton",
+            "id": "btnA",
+            "attrs": {
+                "pin": "5"
+            }
+        },
+        {
+            "type": "rgb-led",
+            "id": "rgb",
+            "attrs": {
+                "redPin": "11",
+                "greenPin": "12",
+                "bluePin": "13",
+                "common": "cathode",
+                "leds": "220 220 220"
+            }
+        }
+    ],
+    "connections": [
+        [
+            "pico:GP0",
+            "$serialMonitor:RX",
+            "",
+            []
+        ],
+        [
+            "pico:GP1",
+            "$serialMonitor:TX",
+            "",
+            []
+        ],
+        [
+            "joystick:GND",
+            "pico:GND",
+            "black",
+            []
+        ],
+        [
+            "joystick:VCC",
+            "pico:3V3",
+            "red",
+            []
+        ],
+        [
+            "btnA:gnd.0",
+            "pico:GND",
+            "black",
+            []
+        ],
+        [
+            "display:VCC",
+            "pico:3V3",
+            "red",
+            []
+        ],
+        [
+            "display:GND",
+            "pico:GND",
+            "black",
+            []
+        ],
+        [
+            "rgb:GND",
+            "pico:GND",
+            "black",
+            []
+        ]
+    ],
+    "dependencies": {}
+}
