@@ -17,7 +17,7 @@
 #define JOY_Y 27
 #define I2C_SDA 14
 #define I2C_SCL 15
-#define I2C_PORT i2c0
+#define I2C_PORT 0x3C
 
 // Dimensões do display
 #define DISPLAY_WIDTH 128
